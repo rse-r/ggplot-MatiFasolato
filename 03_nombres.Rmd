@@ -64,6 +64,12 @@ ggplot(resultados3, aes(x= anio, y = cantidad, color = sexo)) +
 4. ¿Cuál fue la proporción máxima para cada sexo en cada año? Hacé un gráfico mostrando la evolución de eta variable. (podés calcular el máximo con `max(prop)`)
 
 ```{r}
+nombres |> 
+  group_by(anio,sexo) |> 
+  summarise(prop_max = max(prop)) |> 
+  ggplot(aes(anio, prop_max, color = sexo)) +
+  geom_line()
 ```
+
 
 
