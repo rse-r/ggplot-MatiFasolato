@@ -7,9 +7,11 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+library(tidyr)
+library(readr)
 library(dplyr)
 library(ggplot2)
+library(datos)
 ```
 
 
@@ -20,7 +22,11 @@ nombres <- datos::nombres
 1. Calculá cuantos bebés de cada sexo fueron llamados "Mary" o "Kerry". 
 
 ```{r}
-
+resultados <- nombres |> 
+  filter(nombre %in% c("Mary", "Kerry")) |>  #Filtrar por "Mary" o "Kerry"
+  group_by(nombre, sexo) |> 
+  summarise(cantidad = n())
+resultados
 ```
 
 
@@ -28,20 +34,36 @@ nombres <- datos::nombres
 
 
 ```{r}
+resultados2 <- nombres |> 
+  filter(nombre %in% c("Mary")) |>  #Filtrar por "Mary"
+  group_by(nombre,anio,sexo) |> 
+  summarise(cantidad = n())
+resultados2
+```
 
+```{r}
+ggplot(resultados2, aes(x= anio, y = cantidad, color = sexo)) +
+  geom_point()
 ```
 
 3. Repetí el gráfico anterior para el nombre "Kerry".
 
 ```{r}
-
+resultados3 <- nombres |> 
+  filter(nombre %in% c("Kerry")) |>  #Filtrar por "Kerry"
+  group_by(nombre,anio,sexo) |> 
+  summarise(cantidad = n())
+resultados3
+```
+```{r}
+ggplot(resultados3, aes(x= anio, y = cantidad, color = sexo)) +
+  geom_point()
 ```
 
 
 4. ¿Cuál fue la proporción máxima para cada sexo en cada año? Hacé un gráfico mostrando la evolución de eta variable. (podés calcular el máximo con `max(prop)`)
 
 ```{r}
-
 ```
 
 
