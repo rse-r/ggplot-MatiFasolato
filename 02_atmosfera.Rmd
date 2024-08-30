@@ -7,8 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+library(tidyr)
+library(readr)
 library(dplyr)
+library(datos)
 library(ggplot2)
 ```
 
@@ -19,28 +21,46 @@ atmosfera <- datos::atmosfera
 
 
 1. Graficá la relación entre la presión y la temperatura. 
+
 ¿Es una relación lineal más o menos limpia o hay otras cosas “raras”?
+No podemos determinar con certeza si existe o no un patrón ya que a medida que aumenta la presión las temperaturas van tomando valores muy dispersos entre sí. Debido a lo mencionado, podemos decir que no existe una relación lineal limpia ya que los valores están muy dispersos.
 
 ```{r}
-
+ggplot(atmosfera, aes(x= presion, y = temperatura)) + 
+  geom_point()
 ```
 
 
-2. Calculá la temperatura media de cada mes y visualizalo en un gráfico de líneas.(Es decir, el ciclo anual promedio de temperatura). ¿Cómo describirías el ciclo anual en pocas palabras?
+2. Calculá la temperatura media de cada mes y visualizalo en un gráfico de líneas.(Es decir, el ciclo anual promedio de temperatura). 
+¿Cómo describirías el ciclo anual en pocas palabras?
+Observando el gráfico, podemos decir que a mitad de año es cuando se alcanzan las temperaturas más altas teniendo valores picos aproximados de 300 Kelvin pero que durante los otros meses se mantiene una temperatura elevada que va desde los 296 a los 300 Kelvin.
 
 ```{r}
-
+temp_media_mes <- atmosfera |> 
+  group_by(mes) |> 
+  summarise(temperatura_media = mean(temperatura, na.rm = TRUE))
 ```
 
+```{r}
+ggplot(temp_media_mes, aes(x= mes, y = temperatura_media)) +
+  geom_line()
+```
 
 3. Calculá lo mismo pero para cada hemisferio. Graficalo con una línea de distinto color para cada hemisferio. 
 (Ayudas: La función sign() devuelve el signo de una variable; en el hemisferio sur la latitud es negativa y en el hemisferio norte, positiva. 
 Acordate del tema de los grupos y las líneas.)
 
 ¿Cómo cambia tu descripción del ciclo anual ahora?
+Podemos observar que en el hemisferio sur la temperatura promedia en los meses tienen una menor diferencia respecto a la temperatura promedia en los meses en el hemisferio norte. Además, podemos visualizar que en el mes 7 aproximadamente, las temperaturas promedios en el hemisferio norte alcanzan su valor máximo mientras que en el hemisferio sur la temperatura máxima promedio alcanzada se da en el mes 3.
 
 ```{r}
-
+atm_hemisferio <- atmosfera |> 
+  group_by(mes,hemisferio = ifelse(sign(latitud) > 0, "Norte", "Sur")) |> 
+  summarise(tem_media_hem = mean(temperatura, na.rm = TRUE))
 ```
 
+```{r}
+ggplot(atm_hemisferio, aes(x= mes, y = tem_media_hem, color = hemisferio)) +
+  geom_line()
+```
 
